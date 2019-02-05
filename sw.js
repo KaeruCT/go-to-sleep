@@ -1,11 +1,11 @@
 var cacheName = 'go-to-sleep';
 var filesToCache = [
-    '/',
-    '/index.html',
-    '/boom.css',
-    '/main.js',
-    '/sheep.png',
-    '/star.png',
+    './',
+    './index.html',
+    './boom.css',
+    './main.js',
+    './sheep.png',
+    './star.png',
 ];
 
 self.addEventListener('install', function (e) {
