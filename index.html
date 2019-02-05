@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Go To Sleep</title>
+    <link rel="stylesheet" type="text/css" href="boom.css" media="all">
+  </head>
+  <body>
+    <div class="screen" id="start">
+        <div class="menu">
+            <div class="logo">
+                <img src="sheep.png">
+                Go To Sleep
+            </div>
+            <a class="nav" href="#" data-screen="game">Start Game</a>
+        </div>
+    </div>
+    <div class="screen" id="game">
+        <div id="count">0</div>
+    </div>
+    <script src="main.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js').then(function() {
+                console.log('Service Worker Registered');
+            });
+        }
+        </script>
+  </body>
+</html>

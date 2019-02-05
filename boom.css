@@ -1,0 +1,102 @@
+body, * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #113;
+    color: #eee;
+    overflow-x: hidden;
+    font-size: 18px;
+    font-family: Helvetica, Tahoma, Geneva, Verdana, sans-serif;
+}
+
+a {
+    text-decoration: none;
+    color: #fff;
+}
+
+.screen {
+    display: none;
+}
+
+.menu {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    margin-top: 40px;
+    padding: 40px;
+}
+
+.logo {
+    text-align: center;
+    font-size: 40px;
+    color: #ff6;
+    line-height: 100px;
+    margin-bottom: 40px;
+    width: 100%;
+}
+
+.logo img {
+    width: 100px;
+    display: block;
+    margin: 0 auto;
+}
+
+.nav {
+    color: #f6f;
+    display: block;
+    text-align: center;
+    font-size: 30px;
+    font-weight: bold;
+    padding: 15px;
+    border: #faf 8px solid;
+    width: 100%;
+}
+
+.thread {
+    display: inline-block;
+    width: 2px;
+    background: #eee;
+    border-radius: 5px;
+    position: relative;
+    transform-origin: 50% 0;
+    animation: swing 4s ease-in-out infinite;
+    top: 0;
+    transition: top 1s ease-in-out;
+}
+
+.sheep {
+    left: -50px;
+    width: 100px;
+    height: 100px;
+    position: absolute;
+}
+
+#count {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    font-size: 40px;
+    font-weight: bold;
+    padding: 20px;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes swing {
+    0%, 100% {
+        transform: rotate(45deg);
+    }
+    50% {
+        transform: rotate(-45deg);
+    }
+}
