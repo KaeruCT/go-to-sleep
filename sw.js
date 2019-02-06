@@ -6,6 +6,7 @@ var filesToCache = [
     './main.js',
     './sheep.png',
     './star.png',
+    './clouds.png',
     './bah.mp3',
 ];
 
