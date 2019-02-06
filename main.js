@@ -182,8 +182,16 @@ function init() {
     resize();
     window.addEventListener('resize', resize);
 
-    screen.lockOrientationUniversal = screen.lockOrientation || screen.mozLockOrientation || screen.msLockOrientation;
-    screen.lockOrientationUniversal('portrait-primary');
+    try {
+        if (screen.orientation && screen.orientation.lock) {
+            screen.orientation.lock('portrait');
+        } else {
+            screen.lockOrientationUniversal = screen.lockOrientation || screen.mozLockOrientation || screen .msLockOrientation;
+            screen.lockOrientationUniversal('portrait-primary');
+        }
+    } catch (err) {
+        console.error(err);
+    }
 
     [].forEach.call(document.querySelectorAll('.nav'), el => el.addEventListener('click', e => {
         e.preventDefault();
