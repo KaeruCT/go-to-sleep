@@ -4,10 +4,13 @@ body, * {
     box-sizing: border-box;
 }
 
+html {
+    overflow: hidden;
+}
+
 body {
-    background: #113;
+    background: #000;
     color: #eee;
-    overflow-x: hidden;
     font-size: 18px;
     font-family: Helvetica, Tahoma, Geneva, Verdana, sans-serif;
 }
@@ -18,7 +21,13 @@ a {
 }
 
 .screen {
+    background: #113;
     display: none;
+    position: absolute;
+    overflow: hidden;
+    height: 100%;
+    width: 100%;
+    transition: right 1s ease-in;
 }
 
 .menu {
@@ -58,13 +67,17 @@ a {
 .thread {
     display: inline-block;
     width: 2px;
-    background: #eee;
     border-radius: 5px;
     position: relative;
     transform-origin: 50% 0;
     animation: swing 4s ease-in-out infinite;
     top: 0;
     transition: top 1s ease-in-out;
+}
+
+.star {
+    position: absolute;
+    opacity: 0.1;
 }
 
 .sheep {
@@ -94,9 +107,9 @@ a {
 
 @keyframes swing {
     0%, 100% {
-        transform: rotate(45deg);
+        transform: rotate(25deg);
     }
     50% {
-        transform: rotate(-45deg);
+        transform: rotate(-25deg);
     }
 }
