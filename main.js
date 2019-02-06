@@ -1,4 +1,4 @@
-const screen = {};
+const gameScreen = {};
 const starRoot = 10;
 let maxSheep = 3;
 let sheepCount = 0;
@@ -105,9 +105,9 @@ function threadBg() {
 }
 
 function addStar(x, y) {
-    const starWidth = randomRange(screen.width*0.03, screen.width*0.2);
-    const top = x * (screen.height+starWidth/2) - starWidth/2;
-    const left = y * (screen.width+starWidth/2) - starWidth/2;
+    const starWidth = randomRange(gameScreen.width*0.03, gameScreen.width*0.2);
+    const top = x * (gameScreen.height+starWidth/2) - starWidth/2;
+    const left = y * (gameScreen.width+starWidth/2) - starWidth/2;
     const rotate = randomRange(0, 359);
     const starStyle = `top: ${top}px; left: ${left}px; transform: rotate(${rotate}deg); width: ${starWidth}px`;
     const star = html(`<img class="star" src="star.png" style="${starStyle}">`);
@@ -115,10 +115,10 @@ function addStar(x, y) {
 }
 
 function addSheep(x) {
-    const height = screen.height;
+    const height = gameScreen.height;
     const halfSheepHeight = 50;
-    const threadHeight = screen.height/2;
-    const style = `left: ${screen.width*x}px; height: ${height}px; top: -${screen.height}px; background: ${threadBg()}`;
+    const threadHeight = gameScreen.height/2;
+    const style = `left: ${gameScreen.width*x}px; height: ${height}px; top: -${gameScreen.height}px; background: ${threadBg()}`;
     const sheepStyle = `top: ${(height - halfSheepHeight)}px`;
     const sheep = `<img class="sheep" src="sheep.png" style="${sheepStyle}">`;
     const threadedSheep = html(`<div class="thread" style="${style}">${sheep}</div>`);
@@ -132,7 +132,7 @@ function addSheep(x) {
     const touchSheep =  () => {
         if (!alive) return;
         updateCount();
-        threadedSheep.style.top = `-${screen.height}px`;
+        threadedSheep.style.top = `-${gameScreen.height}px`;
         threadedSheep.querySelector('img').style.animation = 'spin 1s linear infinite';
         playSound('bah.mp3');
         alive = false;
@@ -176,11 +176,14 @@ function init() {
     function resize () {
         const e = document.documentElement;
         const b = document.getElementsByTagName('body')[0];
-        screen.width = window.innerWidth || e.clientWidth || b.clientWidth;
-        screen.height = window.innerHeight || e.clientHeight || b.clientHeight;
+        gameScreen.width = window.innerWidth || e.clientWidth || b.clientWidth;
+        gameScreen.height = window.innerHeight || e.clientHeight || b.clientHeight;
     }
     resize();
     window.addEventListener('resize', resize);
+
+    screen.lockOrientationUniversal = screen.lockOrientation || screen.mozLockOrientation || screen.msLockOrientation;
+    screen.lockOrientationUniversal('portrait-primary');
 
     [].forEach.call(document.querySelectorAll('.nav'), el => el.addEventListener('click', e => {
         e.preventDefault();
