@@ -1,7 +1,7 @@
 const screen = {};
 const starRoot = 10;
 let maxSheep = 3;
-let count = 0;
+let sheepCount = 0;
 
 const id = id => document.getElementById(id);
 
@@ -13,6 +13,17 @@ function randomElement(list) {
     return list[Math.floor(Math.random()*list.length)];
 }
 
+function formatSeconds(time) {
+    let hours = Math.floor(time / 3600);
+    let minutes = Math.floor((time - (hours * 3600)) / 60);
+    let seconds = time - (hours * 3600) - (minutes * 60);
+
+    if (hours < 10) hours = `0${hours}`;
+    if (minutes < 10) minutes = `0${minutes}`;
+    if (seconds < 10) seconds = `0${seconds}`;
+    return `${hours}:${minutes}:${seconds}`;
+}
+
 function html(html) {
     const template = document.createElement('template');
     html = html.trim();
@@ -20,14 +31,47 @@ function html(html) {
     return template.content.firstChild;
 }
 
+function playSound(file) {
+    const audio = new Audio(file);
+    audio.play();
+}
+
+let sleepiness = 0;
+let filterDuration = 1000;
+let increasingSleepiness = false;
+function increaseSleepiness () {
+    if (increasingSleepiness) return;
+    increasingSleepiness = true;
+    const filters = [
+        'blur(5px)',
+        'grayscale(80%)',
+        'hue-rotate(180deg)',
+        'invert(100%) brightness(30%)',
+        'brightness(40%)',
+    ];
+    const gameStyle = id('game').style;
+    gameStyle.transition = `filter ${filterDuration/2}ms linear`;
+
+    gameStyle.filter = randomElement(filters);
+    setTimeout(() => {
+        gameStyle.filter = '';
+        filterDuration += 200;
+        increasingSleepiness = false;
+    }, filterDuration);
+}
+
 let transitioningScreen = false;
+let topScreenIndex = 1;
 function showScreen(screenId) {
     if (transitioningScreen) return;
     transitioningScreen = true;
+
+    if (screenId === 'game') initGame();
+
     const currentScreenStyle = id(screenId).style;
     currentScreenStyle.transition = 'none';
     currentScreenStyle.right = '100%';
-    currentScreenStyle.zIndex = 1;
+    currentScreenStyle.zIndex = topScreenIndex++;
     currentScreenStyle.display = 'block';
     currentScreenStyle.transition = '';
     
@@ -41,12 +85,15 @@ function showScreen(screenId) {
             el.style.display = 'none';
         });
         transitioningScreen = false;
-    }, 1200);
+    }, 900);
 }
 
 function updateCount() {
-    count++;
-    id('count').innerText = count;
+    sheepCount++;
+    id('count').innerText = sheepCount;
+    if (sheepCount % 5 === 0) {
+        increaseSleepiness();
+    }
 }
 
 function threadBg() {
@@ -87,6 +134,7 @@ function addSheep(x) {
         updateCount();
         threadedSheep.style.top = `-${screen.height}px`;
         threadedSheep.querySelector('img').style.animation = 'spin 1s linear infinite';
+        playSound('bah.mp3');
         alive = false;
 
         setTimeout(() => {
@@ -96,6 +144,18 @@ function addSheep(x) {
     };
     threadedSheep.addEventListener('touchstart', touchSheep);
     threadedSheep.addEventListener('mousedown', touchSheep);
+}
+
+function startCounter() {
+    let counter = 0;
+    function countTime() {
+        id('time').innerText = formatSeconds(counter);
+        counter += 1;
+        setTimeout(() => {
+            countTime();
+        }, 1000);
+    }
+    countTime();
 }
 
 function initGame() {
@@ -109,6 +169,7 @@ function initGame() {
     for (let i = 0; i < maxSheep; i++) {
         addSheep(i/(maxSheep-1));
     }
+    startCounter();
 }
 
 function init() {
@@ -127,7 +188,6 @@ function init() {
     }));
 
     id('start').style.display = 'block';
-    initGame();
 }
 
 init();

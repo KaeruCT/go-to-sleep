@@ -6,6 +6,7 @@ var filesToCache = [
     './main.js',
     './sheep.png',
     './star.png',
+    './bah.mp3',
 ];
 
 self.addEventListener('install', function (e) {
