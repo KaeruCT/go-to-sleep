@@ -62,7 +62,14 @@ function increaseSleepiness () {
 
 let transitioningScreen = false;
 let topScreenIndex = 1;
-function showScreen(screenId) {
+function showScreen(screenId, skipAnim) {
+    function forAllOtherScreens (fn) {
+        [].forEach.call(document.querySelectorAll('.screen'), el => {
+            if (el.id === screenId) return;
+            fn(el);
+        });
+    }
+
     if (transitioningScreen) return;
     transitioningScreen = true;
 
@@ -70,22 +77,21 @@ function showScreen(screenId) {
 
     const currentScreenStyle = id(screenId).style;
     currentScreenStyle.transition = 'none';
-    currentScreenStyle.right = '100%';
+    currentScreenStyle.transform = 'translateX(-100%)';
     currentScreenStyle.zIndex = topScreenIndex++;
-    currentScreenStyle.display = 'block';
-    currentScreenStyle.transition = '';
-    
-    setTimeout(() => {
-        currentScreenStyle.right = 0;
-    }, 250);
+    currentScreenStyle.opacity = 1;
+    currentScreenStyle.pointerEvents = 'all';
+    forAllOtherScreens(s => s.style.pointerEvents = 'none');
 
     setTimeout(() => {
-        [].forEach.call(document.querySelectorAll('.screen'), el => {
-            if (el.id === screenId) return;
-            el.style.display = 'none';
-        });
+        if (!skipAnim) currentScreenStyle.transition = '';
+        currentScreenStyle.transform = 'translateX(0)';
+    }, 50);
+
+    setTimeout(() => {
+        forAllOtherScreens(s => s.style.opacity = 0);
         transitioningScreen = false;
-    }, 900);
+    }, skipAnim ? 1 : 800);
 }
 
 function updateCount() {
@@ -109,7 +115,7 @@ function addStar(x, y) {
     const top = x * (gameScreen.height+starWidth/2) - starWidth/2;
     const left = y * (gameScreen.width+starWidth/2) - starWidth/2;
     const rotate = randomRange(0, 359);
-    const starStyle = `top: ${top}px; left: ${left}px; transform: rotate(${rotate}deg); width: ${starWidth}px`;
+    const starStyle = `transform: translate(${left}px, ${top}px) rotate(${rotate}deg); width: ${starWidth}px`;
     const star = html(`<img class="star" src="star.png" style="${starStyle}">`);
     id('game').appendChild(star);
 }
@@ -118,13 +124,18 @@ function addSheep(x) {
     const height = gameScreen.height;
     const halfSheepHeight = 50;
     const threadHeight = gameScreen.height/2;
-    const style = `left: ${gameScreen.width*x}px; height: ${height}px; top: -${gameScreen.height}px; background: ${threadBg()}`;
-    const sheepStyle = `top: ${(height - halfSheepHeight)}px`;
-    const sheep = `<img class="sheep" src="sheep.png" style="${sheepStyle}">`;
-    const threadedSheep = html(`<div class="thread" style="${style}">${sheep}</div>`);
+    const sheepX = `${gameScreen.width*x}px`; 
+    const sheepHiddenY = `-${gameScreen.height*1.3}px`;
+    const wrapStyle = `transform: translate(${sheepX}, ${sheepHiddenY})`;
+    const threadStyle = `height: ${height}px; background: ${threadBg()}`;
+    const sheepWrapStyle = `transform: translateY(${(height - halfSheepHeight)}px)`;
+    const sheep = `<div class="sheep-wrap" style="${sheepWrapStyle}"><img class="sheep" src="sheep.png"></div>`;
+    const thread = `<div class="thread" style="${threadStyle}">${sheep}</div>`;
+    const threadWrap = `<div class="thread-wrap" style="${wrapStyle}">${thread}</div>`;
+    const threadedSheep = html(threadWrap);
     setTimeout(() => {
         const offset = 100 * Math.sin(Math.random()*10) - threadHeight;
-        threadedSheep.style.top = `${offset}px`;
+        threadedSheep.style.transform = `translate(${sheepX}, ${offset}px)`;
     }, 500);
     id('game').appendChild(threadedSheep);
 
@@ -132,7 +143,7 @@ function addSheep(x) {
     const touchSheep =  () => {
         if (!alive) return;
         updateCount();
-        threadedSheep.style.top = `-${gameScreen.height}px`;
+        threadedSheep.style.transform = `translate(${sheepX}, ${sheepHiddenY})`;
         threadedSheep.querySelector('img').style.animation = 'spin 1s linear infinite';
         playSound('bah.mp3');
         alive = false;
@@ -198,7 +209,7 @@ function init() {
         showScreen(el.dataset.screen);
     }));
 
-    id('start').style.display = 'block';
+    showScreen('start', true);
 }
 
 init();

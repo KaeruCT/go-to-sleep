@@ -23,12 +23,13 @@ a {
 
 .screen {
     background: linear-gradient(#1f1f4b 50%, #300f1a);
-    display: none;
+    opacity: 0;
+    pointer-events: none;
     position: absolute;
     overflow: hidden;
     height: 100%;
     width: 100%;
-    transition: right .5s ease-in;
+    transition: transform .6s ease-in;
 }
 
 .about-screen {
@@ -94,19 +95,23 @@ a {
 }
 
 .nav:hover {
-    transform: scale(1.2);
+    transform: scale(1.1);
     filter: brightness(150%);
 }
 
+.thread-wrap {
+    position: absolute;
+    transition: transform 1s ease-in-out;
+}
+
 .thread {
-    display: inline-block;
-    width: 2px;
-    border-radius: 5px;
-    position: relative;
     transform-origin: 50% 0;
     animation: swing 4s ease-in-out infinite;
-    top: 0;
-    transition: top 1s ease-in-out;
+    display: inline-block;
+    position: relative;
+    width: 2px;
+    border-radius: 5px;
+    transition: transform 1s ease-in-out;
 }
 
 img {
@@ -122,16 +127,21 @@ img {
 .star {
     position: absolute;
     opacity: 0.1;
+    pointer-events: none;
+}
+
+.sheep-wrap {
+    position: absolute;
+    left: -50px;
 }
 
 .sheep {
-    left: -50px;
     width: 100px;
     height: 100px;
-    position: absolute;
 }
 
 #time, #count {
+    pointer-events: none;
     position: absolute;
     bottom: 0;
     font-size: 35px;
@@ -167,10 +177,10 @@ img {
 }
 
 @keyframes slide-clouds {
-    0%{
+    0% {
       background-position-x: 0;
     }
-    100%{
+    100% {
       background-position-x: -300px;
     }
-  }
+}
