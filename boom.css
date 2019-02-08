@@ -29,6 +29,7 @@ a {
     overflow: hidden;
     height: 100%;
     width: 100%;
+    will-change: transform, filter;
     transition: transform .6s ease-in;
 }
 
@@ -37,6 +38,7 @@ a {
     background-repeat: repeat-x;
     background-position-y: center;
     animation: slide-clouds 8s linear infinite;
+    will-change: background-position-x;
 }
 
 .cloud-bg {
@@ -91,6 +93,7 @@ a {
     border: #faf 8px solid;
     width: 100%;
     margin-bottom: 40px;
+    will-change: transform, filter;
     transition: transform .2s ease-in-out, filter .5s ease-in;
 }
 
@@ -101,6 +104,7 @@ a {
 
 .thread-wrap {
     position: absolute;
+    will-change: transform;
     transition: transform 1s ease-in-out;
 }
 
@@ -111,6 +115,7 @@ a {
     position: relative;
     width: 2px;
     border-radius: 5px;
+    will-change: transform;
     transition: transform 1s ease-in-out;
 }
 
