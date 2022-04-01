@@ -18,9 +18,14 @@
             </div>
             <a class="nav" href="#" data-screen="game">Start Game</a>
             <a class="nav" href="#" data-screen="about">About</a>
+            <div id="settings">
+                <input class="checkbox" type="checkbox" id="effects" />
+                <label for="effects">Disable effects <small>(improves&nbsp;performance)</small></label>
+            </div>
         </div>  
     </div>
     <div class="screen" id="game">
+        <div id="back"><a href="#" data-screen="start">Back to Home</a></div>
         <div id="time"></div>
         <div id="count"></div>
     </div>
@@ -30,21 +35,33 @@
                 <img class="about-star" src="./star.png">
             </div>
             <p class="about">
-                Made with ❤️ by
-                <a href="https://github.com/KaeruCT/">Andr&eacute;s Villarreal</a>
-                using Vanilla JavaScript
+                Count sheep until you fall asleep!<br><br>
+                Made with ❤ by<br>Andrés Villarreal
             </p>
-            <br><br>
-            <a class="nav" href="#" data-screen="start">Back to Start</a>
+            <br>
+            <a class="nav" href="#" data-screen="start">Back to Home</a>
+        </div>
+    </div>
+    <div class="screen easter-egg" id="easter-egg">
+        <div class="container">
+            <div class="row">
+                <img class="play-sound" src="./star.png">
+            </div>
+            <div class="row">
+                <img class="play-sound" src="./star.png">
+                <div class="spacer"></div>
+                <img class="play-sound" src="./star.png">
+            </div>
+            <small><br></small>
+            <div class="row">
+                <img class="play-sound" src="./star.png">
+                <div class="spacer-small"></div>
+                <img class="play-sound" src="./star.png">
+            </div>
+            <small><br></small>
+            <a class="nav" href="#" data-screen="start">Back to Home</a>
         </div>
     </div>
     <script src="./main.js"></script>
-    <script>
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('./sw.js').then(function() {
-                console.log('Service Worker Registered');
-            });
-        }
-        </script>
   </body>
 </html>

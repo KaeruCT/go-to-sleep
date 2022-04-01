@@ -1,9 +1,41 @@
 const gameScreen = {};
-const starRoot = 10;
-let maxSheep = 3;
-let sheepCount = 0;
+const STAR_ROOT = 10;
+const MAX_SHEEP = 10;
+const BAHS = ["bah1.mp3", "bah2.mp3", "bah3.mp3", "bah4.mp3", "bah5.mp3"];
+const COLORS = [
+    '#aff', '#faf', '#ffa',
+    '#aaf', '#afa', '#faa',
+];
+let maxSheep;
+let sheepCount;
+let sleepiness;
+let filterDuration;
 
 const id = id => document.getElementById(id);
+
+const settings = {};
+function setSetting(key, val) {
+    settings[key] = val;
+    try {
+        localStorage.setItem(key, val);
+    } catch {}
+}
+function getSetting(key) {
+    try {
+        if (!settings[key]) {
+            settings[key] = localStorage.getItem(key);
+        }
+    } catch {}
+    return settings[key];
+}
+
+function setEffectsDisabled(enabled) {
+    setSetting("effects", enabled ? "" : "disabled");
+}
+
+function effectsDisabled() {
+    return getSetting("effects") !== "disabled";
+}
 
 function randomRange(min, max) {
     return Math.floor(Math.random()*(max-min+1)+min);
@@ -31,38 +63,45 @@ function html(html) {
     return template.content.firstChild;
 }
 
+let sounds = {};
 function playSound(file) {
-    const audio = new Audio(file);
+    const audio = sounds[file] || new Audio(file);
+    if (!sounds[file]) sounds[file] = audio;
     audio.play();
 }
 
-let sleepiness = 0;
-let filterDuration = 1000;
 let increasingSleepiness = false;
 function increaseSleepiness () {
     if (increasingSleepiness) return;
     increasingSleepiness = true;
-    const filters = [
-        'blur(5px)',
-        'grayscale(80%)',
-        'hue-rotate(180deg)',
-        'invert(100%) brightness(30%)',
-        'brightness(40%)',
-    ];
-    const gameStyle = id('game').style;
-    gameStyle.transition = `filter ${filterDuration/2}ms linear`;
 
-    gameStyle.filter = randomElement(filters);
+    const gameStyle = id('game').style;
+    
+    if (!effectsDisabled()) {
+        const filters = [
+            'blur(5px)',
+            'grayscale(80%)',
+            'hue-rotate(180deg)',
+            'invert(100%) brightness(30%)',
+            'brightness(40%)',
+        ];
+        
+        gameStyle.transition = `filter ${filterDuration/2}ms linear`;
+        gameStyle.filter = randomElement(filters);
+    }
     setTimeout(() => {
         gameStyle.filter = '';
         filterDuration += 200;
         increasingSleepiness = false;
     }, filterDuration);
+
+    maxSheep = Math.min(maxSheep, MAX_SHEEP);
 }
 
 let transitioningScreen = false;
 let topScreenIndex = 1;
 function showScreen(screenId, skipAnim) {
+    gameScreen.currentScreen = screenId;
     function forAllOtherScreens (fn) {
         [].forEach.call(document.querySelectorAll('.screen'), el => {
             if (el.id === screenId) return;
@@ -100,14 +139,9 @@ function updateCount() {
     if (sheepCount % 5 === 0) {
         increaseSleepiness();
     }
-}
-
-function threadBg() {
-    const colors = [
-        '#aff', '#faf', '#ffa',
-        '#aaf', '#afa', '#faa',
-    ];
-    return randomElement(colors);
+    if (sheepCount % 10 === 0) {
+        setTimeout(() => addSheep(Math.random()), randomRange(1500, 4000));
+    }
 }
 
 function addStar(x, y) {
@@ -121,13 +155,16 @@ function addStar(x, y) {
 }
 
 function addSheep(x) {
+    const sheepAlive = document.querySelectorAll('.thread-wrap').length;
+    if (sheepAlive >= maxSheep) return;
+
     const height = gameScreen.height;
     const halfSheepHeight = 50;
     const threadHeight = gameScreen.height/2;
     const sheepX = `${gameScreen.width*x}px`; 
     const sheepHiddenY = `-${gameScreen.height*1.3}px`;
     const wrapStyle = `transform: translate(${sheepX}, ${sheepHiddenY})`;
-    const threadStyle = `height: ${height}px; background: ${threadBg()}`;
+    const threadStyle = `height: ${height}px; background: ${randomElement(COLORS)}`;
     const sheepWrapStyle = `transform: translateY(${(height - halfSheepHeight)}px)`;
     const sheep = `<div class="sheep-wrap" style="${sheepWrapStyle}"><img class="sheep" src="sheep.png"></div>`;
     const thread = `<div class="thread" style="${threadStyle}">${sheep}</div>`;
@@ -145,7 +182,7 @@ function addSheep(x) {
         updateCount();
         threadedSheep.style.transform = `translate(${sheepX}, ${sheepHiddenY})`;
         threadedSheep.querySelector('img').style.animation = 'spin 1s linear infinite';
-        playSound('bah.mp3');
+        playSound(randomElement(BAHS));
         alive = false;
 
         setTimeout(() => {
@@ -157,30 +194,58 @@ function addSheep(x) {
     threadedSheep.addEventListener('mousedown', touchSheep);
 }
 
+let timerTimeout;
 function startCounter() {
+    if (timerTimeout) clearTimeout(timerTimeout);
     let counter = 0;
     function countTime() {
         id('time').innerText = formatSeconds(counter);
         counter += 1;
-        setTimeout(() => {
+        timerTimeout = setTimeout(() => {
             countTime();
         }, 1000);
     }
     countTime();
 }
 
-function initGame() {
-    for (let i = 0; i < starRoot; i++) {
-        for (let j = 0; j < starRoot; j++) {
+function initStars() {
+    [].forEach.call(document.querySelectorAll('.star'), el => el.parentElement.removeChild(el));
+    for (let i = 0; i < STAR_ROOT; i++) {
+        for (let j = 0; j < STAR_ROOT; j++) {
             if ((i + j) % 2 === 0) {
-                addStar(i/starRoot, j/starRoot);
+                addStar(i/STAR_ROOT, j/STAR_ROOT);
             }
         }
     }
+}
+
+function initGame() {
+    maxSheep = 3;
+    sleepiness = 0;
+    sheepCount = 0;
+    sleepiness = 0;
+    filterDuration = 1000;
+    id('count').innerText = 0;
+    initStars();
+    [].forEach.call(document.querySelectorAll('.thread-wrap'), el => el.parentElement.removeChild(el));
     for (let i = 0; i < maxSheep; i++) {
         addSheep(i/(maxSheep-1));
     }
     startCounter();
+}
+
+function explode(el, x, y) {
+    const clone = el.cloneNode();
+    el.parentElement.append(clone);
+    clone.classList.add('explosion');
+    clone.style.position = 'absolute';
+    clone.style.left = `${x - clone.width / 2}px`;
+    clone.style.top = `${y - clone.height / 2}px`;
+    clone.style.transform = `scale(5) rotate(${randomRange(180, -180)}deg)`;
+    clone.style.opacity = 0;
+    setTimeout(() => {
+        clone.parentElement.removeChild(clone);
+    }, 300);
 }
 
 function init() {
@@ -189,13 +254,18 @@ function init() {
         const b = document.getElementsByTagName('body')[0];
         gameScreen.width = window.innerWidth || e.clientWidth || b.clientWidth;
         gameScreen.height = window.innerHeight || e.clientHeight || b.clientHeight;
+        if (gameScreen.currentScreen === 'game') {
+            initStars();
+        }
     }
     resize();
     window.addEventListener('resize', resize);
 
     try {
         if (screen.orientation && screen.orientation.lock) {
-            screen.orientation.lock('portrait');
+            screen.orientation.lock('portrait').catch(() => {
+                // ignore error
+            });
         } else {
             screen.lockOrientationUniversal = screen.lockOrientation || screen.mozLockOrientation || screen .msLockOrientation;
             screen.lockOrientationUniversal('portrait-primary');
@@ -204,12 +274,43 @@ function init() {
         console.error(err);
     }
 
-    [].forEach.call(document.querySelectorAll('.nav'), el => el.addEventListener('click', e => {
+    [].forEach.call(document.querySelectorAll('[data-screen]'), el => el.addEventListener('click', e => {
         e.preventDefault();
         showScreen(el.dataset.screen);
     }));
 
+    // handle effect setting
+    id('effects').checked = effectsDisabled();
+    id('effects').addEventListener('change', (e) => {
+        setEffectsDisabled(e.target.checked);
+        e.preventDefault();
+    });
+
+    // easter-egg
+    let tapCount = 0;
+    let tapTimeout;
+    [].forEach.call(document.querySelectorAll('.logo img'), (el) => {
+        el.addEventListener('click', function (e) {
+            tapCount += 1;
+            if (tapCount > 20) {
+                tapCount = 0;
+                showScreen('easter-egg');
+            } else {
+                if (tapTimeout) clearTimeout(tapTimeout);
+                tapTimeout = setTimeout(() => tapCount = 0, 400);
+                explode(el, e.clientX, e.clientY);
+            }
+        });
+    });
+
+    [].forEach.call(document.querySelectorAll('.play-sound'), (el, i) => {
+            el.addEventListener('click', function (e) {
+                explode(el, e.clientX, e.clientY);
+                playSound(BAHS[i % BAHS.length]);
+            });
+            el.style.filter = `opacity(0.6) saturate(500%) drop-shadow(-1px -1px 5px ${COLORS[i % COLORS.length]})`;
+        });
+
     showScreen('start', true);
 }
-
 init();
