@@ -1,4 +1,5 @@
-body, * {
+body,
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -42,7 +43,7 @@ a {
 }
 
 .cloud-bg {
-    background:  url(clouds.png), linear-gradient(#325 50%, #5e2538);
+    background: url(clouds.png), linear-gradient(#325 50%, #5e2538);
     background-repeat: repeat-x;
     background-position-y: center;
     animation: slide-clouds 8s linear infinite;
@@ -121,7 +122,10 @@ a {
     transition: transform 1s ease-in-out;
 }
 
-img, a, label, .logo {
+img,
+a,
+label,
+.logo {
     -moz-user-select: none;
     -webkit-user-select: none;
     -ms-user-select: none;
@@ -156,7 +160,8 @@ img, a, label, .logo {
     text-decoration: none;
 }
 
-#time, #count {
+#time,
+#count {
     pointer-events: none;
     position: absolute;
     bottom: 0;
@@ -184,13 +189,13 @@ img, a, label, .logo {
     opacity: 0;
 }
 
-.checkbox + label {
+.checkbox+label {
     position: relative;
     cursor: pointer;
     padding: 0;
 }
 
-.checkbox + label:before {
+.checkbox+label:before {
     content: '';
     margin-right: 10px;
     margin-top: 2px;
@@ -202,15 +207,15 @@ img, a, label, .logo {
     border: #faf 2px solid;
 }
 
-.checkbox:hover + label:before {
+.checkbox:hover+label:before {
     border: #fff 2px solid;
 }
 
-.checkbox:checked + label:before {
+.checkbox:checked+label:before {
     background: #faf;
 }
 
-.checkbox:checked + label:after {
+.checkbox:checked+label:after {
     content: '';
     position: absolute;
     left: 2px;
@@ -218,13 +223,13 @@ img, a, label, .logo {
     background: #faf;
     width: 2px;
     height: 2px;
-    box-shadow: 
-      2px 0 0 #325,
-      4px 0 0 #325,
-      4px -2px 0 #325,
-      4px -4px 0 #325,
-      4px -6px 0 #325,
-      4px -8px 0 #325;
+    box-shadow:
+        2px 0 0 #325,
+        4px 0 0 #325,
+        4px -2px 0 #325,
+        4px -4px 0 #325,
+        4px -6px 0 #325,
+        4px -8px 0 #325;
     transform: rotate(45deg);
 }
 
@@ -263,26 +268,32 @@ img, a, label, .logo {
         padding: 10px;
         max-width: 400px;
     }
+
     .logo {
         margin-bottom: 0;
         line-height: 80px;
         font-size: 0.8em;
     }
+
     .logo img {
         width: 70px;
     }
+
     .nav {
         margin-bottom: 10px;
         font-size: 0.8em;
         border-width: 4px;
         padding: 8px;
     }
+
     .about {
         font-size: 0.5em;
     }
+
     .row {
         padding: 0;
     }
+
     .play-sound {
         width: 50px;
         height: 50px;
@@ -293,24 +304,31 @@ img, a, label, .logo {
     from {
         transform: rotate(0deg);
     }
+
     to {
         transform: rotate(360deg);
     }
 }
 
 @keyframes swing {
-    0%, 100% {
+
+    0%,
+    100% {
         transform: rotate(25deg);
     }
+
     50% {
         transform: rotate(-25deg);
     }
 }
 
 @keyframes swing-soft {
-    0%, 100% {
+
+    0%,
+    100% {
         transform: rotate(15deg);
     }
+
     50% {
         transform: rotate(-15deg);
     }
@@ -318,9 +336,10 @@ img, a, label, .logo {
 
 @keyframes slide-clouds {
     0% {
-      background-position-x: 0;
+        background-position-x: 0;
     }
+
     100% {
-      background-position-x: -300px;
+        background-position-x: -300px;
     }
 }

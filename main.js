@@ -1,7 +1,7 @@
 const gameScreen = {};
 const STAR_ROOT = 10;
 const MAX_SHEEP = 10;
-const BAHS = ["bah1.mp3", "bah2.mp3", "bah3.mp3", "bah4.mp3", "bah5.mp3"];
+const BAHS = ['bah1.mp3', 'bah2.mp3', 'bah3.mp3', 'bah4.mp3', 'bah5.mp3'];
 const COLORS = [
     '#aff', '#faf', '#ffa',
     '#aaf', '#afa', '#faa',
@@ -18,31 +18,31 @@ function setSetting(key, val) {
     settings[key] = val;
     try {
         localStorage.setItem(key, val);
-    } catch {}
+    } catch { }
 }
 function getSetting(key) {
     try {
         if (!settings[key]) {
             settings[key] = localStorage.getItem(key);
         }
-    } catch {}
+    } catch { }
     return settings[key];
 }
 
 function setEffectsDisabled(enabled) {
-    setSetting("effects", enabled ? "" : "disabled");
+    setSetting('effects', enabled ? '' : 'disabled');
 }
 
 function effectsDisabled() {
-    return getSetting("effects") !== "disabled";
+    return getSetting('effects') !== 'disabled';
 }
 
 function randomRange(min, max) {
-    return Math.floor(Math.random()*(max-min+1)+min);
+    return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
 function randomElement(list) {
-    return list[Math.floor(Math.random()*list.length)];
+    return list[Math.floor(Math.random() * list.length)];
 }
 
 function formatSeconds(time) {
@@ -71,12 +71,12 @@ function playSound(file) {
 }
 
 let increasingSleepiness = false;
-function increaseSleepiness () {
+function increaseSleepiness() {
     if (increasingSleepiness) return;
     increasingSleepiness = true;
 
     const gameStyle = id('game').style;
-    
+
     if (!effectsDisabled()) {
         const filters = [
             'blur(5px)',
@@ -85,8 +85,8 @@ function increaseSleepiness () {
             'invert(100%) brightness(30%)',
             'brightness(40%)',
         ];
-        
-        gameStyle.transition = `filter ${filterDuration/2}ms linear`;
+
+        gameStyle.transition = `filter ${filterDuration / 2}ms linear`;
         gameStyle.filter = randomElement(filters);
     }
     setTimeout(() => {
@@ -102,7 +102,7 @@ let transitioningScreen = false;
 let topScreenIndex = 1;
 function showScreen(screenId, skipAnim) {
     gameScreen.currentScreen = screenId;
-    function forAllOtherScreens (fn) {
+    function forAllOtherScreens(fn) {
         [].forEach.call(document.querySelectorAll('.screen'), el => {
             if (el.id === screenId) return;
             fn(el);
@@ -145,12 +145,12 @@ function updateCount() {
 }
 
 function addStar(x, y) {
-    const starWidth = randomRange(gameScreen.width*0.03, gameScreen.width*0.2);
-    const top = x * (gameScreen.height+starWidth/2) - starWidth/2;
-    const left = y * (gameScreen.width+starWidth/2) - starWidth/2;
+    const starWidth = randomRange(gameScreen.width * 0.03, gameScreen.width * 0.2);
+    const top = x * (gameScreen.height + starWidth / 2) - starWidth / 2;
+    const left = y * (gameScreen.width + starWidth / 2) - starWidth / 2;
     const rotate = randomRange(0, 359);
     const starStyle = `transform: translate(${left}px, ${top}px) rotate(${rotate}deg); width: ${starWidth}px`;
-    const star = html(`<img class="star" src="star.png" style="${starStyle}">`);
+    const star = html(`<img class='star' src='star.png' style='${starStyle}'>`);
     id('game').appendChild(star);
 }
 
@@ -160,24 +160,24 @@ function addSheep(x) {
 
     const height = gameScreen.height;
     const halfSheepHeight = 50;
-    const threadHeight = gameScreen.height/2;
-    const sheepX = `${gameScreen.width*x}px`; 
-    const sheepHiddenY = `-${gameScreen.height*1.3}px`;
+    const threadHeight = gameScreen.height / 2;
+    const sheepX = `${gameScreen.width * x}px`;
+    const sheepHiddenY = `-${gameScreen.height * 1.3}px`;
     const wrapStyle = `transform: translate(${sheepX}, ${sheepHiddenY})`;
     const threadStyle = `height: ${height}px; background: ${randomElement(COLORS)}`;
     const sheepWrapStyle = `transform: translateY(${(height - halfSheepHeight)}px)`;
-    const sheep = `<div class="sheep-wrap" style="${sheepWrapStyle}"><img class="sheep" src="sheep.png"></div>`;
-    const thread = `<div class="thread" style="${threadStyle}">${sheep}</div>`;
-    const threadWrap = `<div class="thread-wrap" style="${wrapStyle}">${thread}</div>`;
+    const sheep = `<div class='sheep-wrap' style='${sheepWrapStyle}'><img class='sheep' src='sheep.png'></div>`;
+    const thread = `<div class='thread' style='${threadStyle}'>${sheep}</div>`;
+    const threadWrap = `<div class='thread-wrap' style='${wrapStyle}'>${thread}</div>`;
     const threadedSheep = html(threadWrap);
     setTimeout(() => {
-        const offset = 100 * Math.sin(Math.random()*10) - threadHeight;
+        const offset = 100 * Math.sin(Math.random() * 10) - threadHeight;
         threadedSheep.style.transform = `translate(${sheepX}, ${offset}px)`;
     }, 500);
     id('game').appendChild(threadedSheep);
 
     let alive = true;
-    const touchSheep =  () => {
+    const touchSheep = () => {
         if (!alive) return;
         updateCount();
         threadedSheep.style.transform = `translate(${sheepX}, ${sheepHiddenY})`;
@@ -213,7 +213,7 @@ function initStars() {
     for (let i = 0; i < STAR_ROOT; i++) {
         for (let j = 0; j < STAR_ROOT; j++) {
             if ((i + j) % 2 === 0) {
-                addStar(i/STAR_ROOT, j/STAR_ROOT);
+                addStar(i / STAR_ROOT, j / STAR_ROOT);
             }
         }
     }
@@ -229,7 +229,7 @@ function initGame() {
     initStars();
     [].forEach.call(document.querySelectorAll('.thread-wrap'), el => el.parentElement.removeChild(el));
     for (let i = 0; i < maxSheep; i++) {
-        addSheep(i/(maxSheep-1));
+        addSheep(i / (maxSheep - 1));
     }
     startCounter();
 }
@@ -249,7 +249,7 @@ function explode(el, x, y) {
 }
 
 function init() {
-    function resize () {
+    function resize() {
         const e = document.documentElement;
         const b = document.getElementsByTagName('body')[0];
         gameScreen.width = window.innerWidth || e.clientWidth || b.clientWidth;
@@ -267,7 +267,7 @@ function init() {
                 // ignore error
             });
         } else {
-            screen.lockOrientationUniversal = screen.lockOrientation || screen.mozLockOrientation || screen .msLockOrientation;
+            screen.lockOrientationUniversal = screen.lockOrientation || screen.mozLockOrientation || screen.msLockOrientation;
             screen.lockOrientationUniversal('portrait-primary');
         }
     } catch (err) {
@@ -304,12 +304,12 @@ function init() {
     });
 
     [].forEach.call(document.querySelectorAll('.play-sound'), (el, i) => {
-            el.addEventListener('click', function (e) {
-                explode(el, e.clientX, e.clientY);
-                playSound(BAHS[i % BAHS.length]);
-            });
-            el.style.filter = `opacity(0.6) saturate(500%) drop-shadow(-1px -1px 5px ${COLORS[i % COLORS.length]})`;
+        el.addEventListener('click', function (e) {
+            explode(el, e.clientX, e.clientY);
+            playSound(BAHS[i % BAHS.length]);
         });
+        el.style.filter = `opacity(0.6) saturate(500%) drop-shadow(-1px -1px 5px ${COLORS[i % COLORS.length]})`;
+    });
 
     showScreen('start', true);
 }

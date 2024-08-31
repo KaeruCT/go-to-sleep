@@ -8,6 +8,10 @@ var filesToCache = [
     './star.png',
     './clouds.png',
     './bah.mp3',
+    './bah2.mp3',
+    './bah3.mp3',
+    './bah4.mp3',
+    './bah5.mp3',
 ];
 
 self.addEventListener('install', function (e) {
